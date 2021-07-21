@@ -1,0 +1,9 @@
+﻿<bmwpf:DockableWindow x:Class="WPFSample.Views.DockWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:bmwpf="clr-namespace:Bentley.MicroStation.WPF;assembly=Bentley.MicroStation"
+        Title="DockWindow" Height="300" Width="300">
+    <Grid>
+        
+    </Grid>
+</bmwpf:DockableWindow>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<KeyinTree xmlns="http://www.bentley.com/schemas/1.0/MicroStation/AddIn/KeyinTree.xsd">
+    <RootKeyinTable ID="root">
+        <Keyword SubtableRef="props" CommandClass="MacroTools" CommandWord="Power">
+            <Options Required="true"/>
+        </Keyword>
+    </RootKeyinTable>
+    
+    <SubKeyinTables>
+        <KeyinTable ID="props">
+            <Keyword CommandWord="shortcut" />
+			<Keyword CommandWord="reloadConfig" />
+        </KeyinTable>
+    </SubKeyinTables>
+    
+    <KeyinHandlers>
+        <KeyinHandler Keyin="Power shortcut"   Function="SwTools.PowerShortcut.Keyins.PowerShortcutWindow" />
+		<KeyinHandler Keyin="Power reloadConfig"   Function="SwTools.PowerShortcut.Keyins.ReloadConfig" />
+	</KeyinHandlers>
+</KeyinTree>
