@@ -3,11 +3,24 @@
 ## 安装
 
 1. 将编译的 `PowerShortcut.dll` 拷贝至 `C:\Program Files\Bentley\OpenRoads Designer CONNECT Edition\OpenRoadsDesigner\Mdlapps` 目录中。
+
 2. 在 `C:\Users\%username%\AppData\Local\Bentley\OpenRoadsDesigner\10.0.0` 中建立 `shortcutsConfig.json` 文本文件（可以直接复制路径到资源管理器中打开）。然后将下面的模板复制到这个配置文件中。
+
+3. 设置自动加载快捷键模块
+
+   Settings=>Configuration=>Configuration Variables，搜索 MS_DGNAPPS，点击修改，在内容末尾添加 `;PowerShortcut`，点击确定。
+
+   ![image-20210721095527255](images/image-20210721095527255.png)
+
+4. 修改空格键唤醒快捷键功能
+
+   Settings=>User=>Keyboard Shortcuts, 修改空格（space）的 keyin 为：`Power shortcut` 。
+
+   ![image-20210721095036505](images/image-20210721095036505.png)
 
 ## 快捷键定义
 
-模板：
+**模板：**
 
 ``` json
 {
@@ -56,7 +69,7 @@
 }
 ```
 
-快捷键定义：
+**单个快捷键定义：**
 
 ``` json
 {
@@ -66,15 +79,8 @@
 }, // 每一个定义都要以英文逗号结尾
 ```
 
-## 自动加载模块设置
+## 使用步骤
 
-Settings=>Configuration=>Configuration Variables，搜索 MS_DGNAPPS，点击修改，在内容末尾添加 `;PowerShortcut`，点击确定。
-
-![image-20210721095527255](images/image-20210721095527255.png)
-
-## 修改空格唤醒快捷键
-
-Settings=>User=>Keyboard Shortcuts, 修改空格（space）的 keyin 为：`Power shortcut` 。
-
-![image-20210721095036505](images/image-20210721095036505.png)
-
+1. 按空格唤醒快捷键输入窗体
+2. 输入快捷键，可以使用 tab 键自动补全
+3. 快捷键输入完成后，按空格或者Enter确认命令

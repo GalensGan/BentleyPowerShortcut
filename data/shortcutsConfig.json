@@ -1,0 +1,94 @@
+{
+    "shortcuts":[
+        {
+            "names":["l"],
+            "keyin":"place smartline",
+            "description":"绘制直线"
+        },
+		{
+            "names":["d","delete"],
+            "keyin":"delete element",
+            "description":"删除元素"
+        },
+		{
+            "names":["c"],
+            "keyin":"place circle icon",
+            "description":"绘制圆弧"
+        },
+		{
+            "names":["cc"],
+            "keyin":"place circle center",
+            "description":"通过圆心绘制圆弧"
+        },
+		{
+            "names":["cd"],
+            "keyin":"place circle diameter",
+            "description":"通过直径绘制圆弧"
+        },
+		{
+            "names":["m"],
+            "keyin":"move icon",
+            "description":"移动"
+        },
+		{
+            "names":["co"],
+            "keyin":"copy icon",
+            "description":"复制"
+        },
+		{
+            "names":["mi"],
+            "keyin":"mirror icon",
+            "description":"镜像"
+        },
+		{
+            "names":["o"],
+            "keyin":"MOVE PARALLEL OFFSET",
+            "description":"偏移"
+        },
+		{
+            "names":["tr"],
+            "keyin":"trim multiple",
+            "description":"修剪"
+        },
+		{
+            "names":["te"],
+            "keyin":"trim Extend",
+            "description":"延长"
+        },
+		{
+            "names":["b"],
+            "keyin":"trim break",
+            "description":"打断"
+        },
+		{
+            "names":["ti"],
+            "keyin":"trim tointersection",
+            "description":"剪切到交点"
+        },
+		{
+            "names":["reload"],
+            "keyin":"power reloadConfig",
+            "description":"重新加载快捷键"
+        },
+		{
+            "names":["default"],
+            "keyin":"model active default",
+            "description":"打开/关闭 default model"
+        },
+		{
+            "names":["model"],
+            "keyin":"MDL KEYIN MODELMANAGER MODEL DIALOG TOGGLE",
+            "description":"打开/关闭 model 管理界面"
+        },
+		{
+            "names":["ref"],
+            "keyin":"MDL KEYIN REF DIALOG REFERENCE TOGGLE",
+            "description":"打开 model 管理界面"
+        },
+		{
+            "names":["skp"],
+            "keyin":"snap keypoint",
+            "description":"捕捉关键点"
+        },
+    ]
+}

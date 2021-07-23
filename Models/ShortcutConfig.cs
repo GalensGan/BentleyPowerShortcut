@@ -16,17 +16,19 @@ namespace SwTools.PowerShortcut.Models
         private static ShortcutConfig _instance;
 
         private JObject _config = null;
+
+        public static string ConfigPath { get; private set; } = ConfigurationManager.GetVariable("_USTN_HOMEROOT") + "shortcutsConfig.json";
+
         private ShortcutConfig()
         {
-            string configPath = ConfigurationManager.GetVariable("_USTN_HOMEROOT")+"shortcutsConfig.json";
-
-            if (!File.Exists(configPath)) {
+            if (!File.Exists(ConfigPath))
+            {
                 // 请添加
-                System.Windows.Forms.MessageBox.Show($"请添加快捷键配置文件:{configPath}");
+                System.Windows.Forms.MessageBox.Show($"请添加快捷键配置文件:{ConfigPath}");
                 return;
             }
 
-            string configStr = File.ReadAllText(configPath);
+            string configStr = File.ReadAllText(ConfigPath);
             _config = JsonConvert.DeserializeObject<JObject>(configStr);
         }
 
@@ -55,9 +57,9 @@ namespace SwTools.PowerShortcut.Models
             foreach (JObject jobj in jArray)
             {
                 JArray jNames = jobj.Value<JArray>("names");
-                if (jNames == null || jNames.Count<1) continue;
+                if (jNames == null || jNames.Count < 1) continue;
 
-               List<string> namesTemp = jNames.ToList().ConvertAll(item => item.Value<string>().ToLower());
+                List<string> namesTemp = jNames.ToList().ConvertAll(item => item.Value<string>().ToLower());
 
                 if (!namesTemp.Contains(name.ToLower())) continue;
 
@@ -72,7 +74,8 @@ namespace SwTools.PowerShortcut.Models
             return definition;
         }
 
-        public void UpdateShortcut(Shortcut shortcut) {
+        public void UpdateShortcut(Shortcut shortcut)
+        {
             Shortcut temp = GetShortcut(shortcut.Name);
             shortcut.Keyin = temp.Keyin;
             shortcut.Description = temp.Description;
