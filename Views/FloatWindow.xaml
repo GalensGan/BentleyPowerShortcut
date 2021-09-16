@@ -8,94 +8,69 @@
         xmlns:props="clr-namespace:SwTools.PowerShortcut.Properties"
         d:DataContext="{d:DesignInstance vm:FloatWindowViewModel}"
         Title="超级快捷键"
-        MinHeight="120"
+        MinHeight="100"
         MinWidth="200"
         Width="200"
-        Height="120"
+        Height="100"
         >
-	
-    <Grid Margin="4">
-        <Grid.Resources>
-            <!--
-              The template which renders a TextBox
-              when it contains invalid data.
-              -->
-            <ControlTemplate x:Key="TextBoxErrorTemplate">
-                <Grid>
-                    <!--
-                    This placeholder occupies where the TextBox will appear.
-                    -->
-                    <AdornedElementPlaceholder />
-                    <!--
-                    Error symbol.
-                    -->
-                    <Ellipse HorizontalAlignment="Right"
-                             VerticalAlignment="Center"
-                             Margin="0,0,3,0"
-                             ToolTip="Contains invalid data"
-                             Width="12"
-                             Height="12">
-                        <Ellipse.Fill>
-                            <LinearGradientBrush>
-                                <GradientStop Color="#11FF1111"
-                                              Offset="0" />
-                                <GradientStop Color="#FFFF0000"
-                                              Offset="1" />
-                            </LinearGradientBrush>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                </Grid>
-            </ControlTemplate>
+    <Window.Resources>
+        <Style x:Key="UserInfoStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Grid Height="36" x:Name="grid">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Margin="5,0,0,0" Grid.Row="0" Text="{Binding Name}"/>
+                            <TextBlock Margin="5,0,0,0" Grid.Row="1" Text="{Binding Description}" Foreground="#808080"/>
+                            <TextBlock Grid.Row="0" Grid.RowSpan="2" Text="{Binding Frequency,StringFormat={}{0}次}" Foreground="#808080" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 5 0"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="grid" Property="Background" Value="#fceeb9"/>
+                            </Trigger>
+                            <Trigger Property="Selector.IsSelected" Value="true">
+                                <Setter TargetName="grid" Property="Background" Value="#fae388"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+    </Window.Resources>
 
-            <!--
-            The Style applied to both TextBox controls in the UI.
-            -->
-            <Style TargetType="TextBox">
-                <Setter Property="Margin"
-                        Value="4,4,4,4" />
-                <Setter Property="Validation.ErrorTemplate"
-                        Value="{StaticResource TextBoxErrorTemplate}" />
-                <Style.Triggers>
-                    <Trigger Property="Validation.HasError"
-                             Value="True">
-                        <Setter Property="ToolTip">
-                            <Setter.Value>
-                                <Binding Path="(Validation.Errors)[0].ErrorContent"
-                                         RelativeSource="{x:Static RelativeSource.Self}" />
-                            </Setter.Value>
-                        </Setter>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </Grid.Resources>
+    <Grid>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-            
-        <TextBlock Grid.Row="0"
-                   Margin="4"
-                   Text="{x:Static props:Resources.Enter_Name}"></TextBlock>
 
-        <TextBox Grid.Row="1" Name="CommandText">
-            <TextBox.Text>
-                <Binding Path="Name"
-                         UpdateSourceTrigger="PropertyChanged">
-                    <Binding.ValidationRules>
-                        <DataErrorValidationRule />
-                    </Binding.ValidationRules>
-                </Binding>
-            </TextBox.Text>
+        <TextBlock Margin="5,0,0,2" Grid.Row="0" Text="{x:Static props:Resources.Enter_Name}"></TextBlock>
+
+        <TextBox Margin="5,0,5,0" Grid.Row="1" Name="CommandText"  Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
         </TextBox>
 
-        <TextBlock Grid.Row="2"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Center"
-                   TextWrapping="Wrap"
-                   FontStyle="Italic"
-                   Margin="4"
-                   Text="{Binding Path=ShowDescription}" />
+        <ListBox Grid.Row="2" BorderThickness="0" ItemContainerStyle="{StaticResource UserInfoStyle}" x:Name="ShortcutsList" Background="Transparent" KeyboardNavigation.TabNavigation="Cycle" >
+            <!--<ListBox.Style>
+                <Style TargetType="ListBox">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBox">
+                                <Border x:Name="Bd"  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="0">
+                                    <ScrollViewer Focusable="False">
+                                        <ItemsPresenter />
+                                    </ScrollViewer>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.Style>-->
+        </ListBox>
     </Grid>
 </Window>

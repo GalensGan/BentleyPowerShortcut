@@ -8,7 +8,7 @@
     <RootNamespace>SwTools.PowerShortcut</RootNamespace>
     <AssemblyName>PowerShortcut</AssemblyName>
     <WarningLevel>4</WarningLevel>
-    <OutputType>library</OutputType>
+    <OutputType>Library</OutputType>
     <!-- Explicitly added -->
     <AssemblyVersionAttribute>1.0.0.0</AssemblyVersionAttribute>
     <AssemblyDescriptionAttribute>PowerShortcut</AssemblyDescriptionAttribute>
@@ -63,7 +63,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>$(ORD)\mdlapps\</OutputPath>
+    <OutputPath>C:\sw_Bentley\OpenRoads\sw_Standards\mdlapps\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>
@@ -95,6 +95,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
@@ -155,6 +158,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\JsonHelper.cs" />
     <Compile Include="Helper\Win32Helper.cs" />
     <Compile Include="Keyins.cs" />
     <Compile Include="Models\Shortcut.cs" />
@@ -224,6 +228,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Models\systemShortcuts.json" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -9,24 +9,32 @@ namespace SwTools.PowerShortcut.Models
     class ShortcutsHistory
     {
         private int _limit = 20;
-        public List<string> History { get; set; } = new List<string>();
+        public List<Shortcut> History { get; set; } = new List<Shortcut>();
 
-        public void Push(string shortcutName) {
-            if (string.IsNullOrEmpty(shortcutName)) return;
+        public void Push(Shortcut shortcut)
+        {
+            // 判断是否是空命令
+            if (shortcut == null || string.IsNullOrEmpty(shortcut.Keyin)) return;
+
+            // 判断最后一个是否与当前相同
+            var last = History.FirstOrDefault(item => item.Name == shortcut.Name);
+            if (last != null) return;
 
             if (History.Count == _limit)
             {
                 History.RemoveAt(0);
             }
-            History.Add(shortcutName);
+            History.Add(shortcut);
             _currentIndex = History.Count - 1;
         }
 
         private int _currentIndex = 0;
 
-        public string Previous()
+        public Shortcut Previous()
         {
-            if (History.Count < 1) return string.Empty;
+            if (History.Count < 1) return null;
+
+            var result = History[_currentIndex];
 
             _currentIndex -= 1;
             if (_currentIndex < 0)
@@ -34,12 +42,14 @@ namespace SwTools.PowerShortcut.Models
                 _currentIndex += History.Count;
             }
 
-            return History[_currentIndex];
+            return result;
         }
 
-        public string Next()
+        public Shortcut Next()
         {
-            if (History.Count < 1) return string.Empty;
+            if (History.Count < 1) return null;
+
+            var result = History[_currentIndex];
 
             _currentIndex += 1;
             if (_currentIndex >= History.Count)
@@ -47,7 +57,7 @@ namespace SwTools.PowerShortcut.Models
                 _currentIndex -= History.Count;
             }
 
-            return History[_currentIndex];
+            return result;
         }
     }
 }

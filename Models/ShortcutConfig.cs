@@ -1,21 +1,25 @@
 ﻿using Bentley.DgnPlatformNET;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SwTools.PowerShortcut.Helper;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SwTools.PowerShortcut.Models
 {
     class ShortcutConfig
     {
-        private readonly string shortcutFieldName = "shortcuts";
         private static ShortcutConfig _instance;
 
-        private JObject _config = null;
+        private List<Shortcut> _shortcuts = new List<Shortcut>();
+
+        private JObject _primaryObj;
 
         public static string ConfigPath { get; private set; } = ConfigurationManager.GetVariable("_USTN_HOMEROOT") + "shortcutsConfig.json";
 
@@ -28,8 +32,56 @@ namespace SwTools.PowerShortcut.Models
                 return;
             }
 
-            string configStr = File.ReadAllText(ConfigPath);
-            _config = JsonConvert.DeserializeObject<JObject>(configStr);
+            try
+            {
+
+                string configStr = File.ReadAllText(ConfigPath);
+                _primaryObj = JsonConvert.DeserializeObject<JObject>(configStr);
+
+                // 添加系统配置
+                Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SwTools.PowerShortcut.Models.systemShortcuts.json");
+                StreamReader sr = new StreamReader(stream);
+                var systemShortcutsConfig = sr.ReadToEnd();
+                sr.Close();
+                stream.Close();
+
+                JObject sysShortcuts = JObject.Parse(systemShortcutsConfig);
+                JObject configObj = _primaryObj.DeepClone() as JObject;
+                configObj.Merge(sysShortcuts);
+
+                // 将配置转成快捷键
+                JArray arr = configObj.Value<JArray>("shortcuts");
+                foreach (JToken jt in arr)
+                {
+                    // 遍历 name
+                    JArray names = jt.Value<JArray>("names");
+                    foreach (JToken name in names)
+                    {
+                        // 允许快捷键名称重复
+                        Shortcut shortcut = new Shortcut()
+                        {
+                            // 获取数据
+                            Name = name.ToObject<string>(),
+                            Keyin = jt.Value<string>("keyin"),
+                            Description = jt.Value<string>("description"),
+                            Frequency = jt.Value<int>("frequency")
+                        };
+
+                        // 从频率表中读取频率数据
+                        var sysF = configObj.SelectValueOrDefault($"frequency.{shortcut.Name}", 0);
+                        shortcut.Frequency += sysF;
+
+                        // 保存
+                        _shortcuts.Add(shortcut);
+                    }
+                }
+
+                // 获取最小频率，对所有频率缩小
+            }
+            catch (Exception e)
+            {
+                System.Windows.Forms.MessageBox.Show(e.Message);
+            }
         }
 
         public static ShortcutConfig Instance
@@ -42,69 +94,69 @@ namespace SwTools.PowerShortcut.Models
             }
         }
 
+        /// <summary>
+        /// 重新加载配置文件
+        /// </summary>
         public void Reload()
         {
             _instance = new ShortcutConfig();
         }
 
-        public Shortcut GetShortcut(string name)
+        /// <summary>
+        /// 过滤符合条件的快捷键
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public List<Shortcut> GetShortcuts(string filter)
         {
-            Shortcut definition = new Shortcut();
-            if (_config == null) return definition;
+            if (filter==null) return new List<Shortcut>();
+            filter = filter.Trim(' ');
 
-            JArray jArray = _config.Value<JArray>(shortcutFieldName);
-            // 从里面找到name相等的值            
-            foreach (JObject jobj in jArray)
+            if (string.IsNullOrEmpty(filter)) return new List<Shortcut>();
+
+            // 进行正则匹配
+            string pattern = "\\S*";
+            for (int i = 0; i < filter.Length; i++)
             {
-                JArray jNames = jobj.Value<JArray>("names");
-                if (jNames == null || jNames.Count < 1) continue;
-
-                List<string> namesTemp = jNames.ToList().ConvertAll(item => item.Value<string>().ToLower());
-
-                if (!namesTemp.Contains(name.ToLower())) continue;
-
-                // 获取数据
-                definition.Name = jobj.Value<string>("name");
-                definition.Keyin = jobj.Value<string>("keyin");
-                definition.Description = jobj.Value<string>("description");
-
-                break;
+                pattern += filter[i] + "\\S*";
             }
 
-            return definition;
-        }
+            Regex regex = new Regex(pattern);
 
-        public void UpdateShortcut(Shortcut shortcut)
-        {
-            Shortcut temp = GetShortcut(shortcut.Name);
-            shortcut.Keyin = temp.Keyin;
-            shortcut.Description = temp.Description;
-        }
-
-        public string TabFullName(string name)
-        {
-            if (_config == null) return string.Empty;
-
-            JArray jArray = _config.Value<JArray>(shortcutFieldName);
-            string lowerName = name.ToLower();
-            string shortcut = name;
-
-            // 从里面找到name相等的值            
-            foreach (JObject jobj in jArray)
+            // 排序
+            var results = _shortcuts.FindAll(item => regex.IsMatch(item.Name));
+            results = results.OrderByDescending(item => item.Frequency).ToList();
+            // 找到全匹配的，移动到第一位
+            var index = results.FindIndex(item => item.Name == filter);
+            if (index > -1)
             {
-                JArray jNames = jobj.Value<JArray>("names");
-                if (jNames == null || jNames.Count < 1) continue;
-
-                List<string> namesTemp = jNames.ToList().ConvertAll(item => item.Value<string>().ToLower());
-
-                string shortcutTemp = namesTemp.Find(n => n.Contains(lowerName));
-                if (string.IsNullOrEmpty(shortcutTemp)) continue;
-
-                shortcut = shortcutTemp;
-                break;
+                results.Insert(0, results[index]);
+                results.RemoveAt(index + 1);
             }
 
-            return shortcut;
+            return results;
+        }
+
+        public void SaveFrequency(string shortcutName, int frequency)
+        {
+            var fObj = _primaryObj.SelectToken("frequency") as JObject;
+            if (fObj == null)
+            {
+                fObj = new JObject();
+                _primaryObj.Add(new JProperty("frequency", fObj));
+            }
+
+            // 获取特定的配置
+            var fProp = fObj.SelectToken(shortcutName);
+            if (fProp == null) fObj.Add(new JProperty(shortcutName, frequency));
+            else fObj[shortcutName] = frequency;
+
+            // 保存
+            FileStream fileStream = new FileStream(ConfigPath, FileMode.Create);
+            StreamWriter sw = new StreamWriter(fileStream);
+            sw.Write(JsonConvert.SerializeObject(_primaryObj, Formatting.Indented));
+            sw.Close();
+            fileStream.Close();
         }
     }
 }

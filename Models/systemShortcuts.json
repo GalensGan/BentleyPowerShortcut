@@ -1,0 +1,14 @@
+{
+  "shortcuts": [
+    {
+      "names": [ "config" ],
+      "keyin": "power openConfig",
+      "description": "打开快捷键配置文件"
+    },
+    {
+      "names": [ "reload" ],
+      "keyin": "power reloadConfig",
+      "description": "重新加载快捷键"
+    }
+  ]
+}

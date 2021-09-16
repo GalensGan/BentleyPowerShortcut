@@ -3,7 +3,10 @@
 |  $Copyright: (c) 2015 Bentley Systems, Incorporated. All rights reserved. $
 |
 +--------------------------------------------------------------------------------------*/
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 using Bentley.UI.Mvvm;
@@ -13,76 +16,52 @@ using SwTools.PowerShortcut.Views;
 
 namespace SwTools.PowerShortcut.ViewModels
 {
-    class FloatWindowViewModel : ViewModelBase, IDataErrorInfo
+    class FloatWindowViewModel : ViewModelBase
     {
         public PropertyObserver<FloatWindowViewModel> PropertyObserver { get; set; }
 
-        public Models.Shortcut Shortcut { get; set; }
+        /// <summary>
+        /// 快捷键结果
+        /// </summary>
+        public ObservableCollection<Models.Shortcut> ShortcutResults = new ObservableCollection<Models.Shortcut>();
 
         public FloatWindowViewModel()
         {
-            Shortcut = new Models.Shortcut();  // Example
-            Shortcut.Name = "";
             PropertyObserver = new PropertyObserver<FloatWindowViewModel>(this);
 
             // Greeting has a dependency on Name. 
             // Call NotifyOfPropertyChange for Greeting whenever Name changes.
-            PropertyObserver.RegisterHandler(t => t.Name, t => NotifyOfPropertyChange(() => ShowDescription));
+            // PropertyObserver.RegisterHandler(t => t.InputText, t => NotifyOfPropertyChange(() => ShowDescription));
+
+            // 读取所有的快捷键
+
         }
 
-        public string Name
+        private string _inputText = string.Empty;
+        public string InputText
         {
             get
             {
-                return Shortcut.Name;
+                return _inputText;
             }
             set
             {
-                // 如果后面有空格，说明确认命令
-                Shortcut.Name = value.Trim(' ');
-                Shortcut.Update();
+                _inputText = value??string.Empty;
 
-                NotifyOfPropertyChange(() => Name);
-            }
-        }
+                // 通过关键词搜索快捷键，并根据使用频次进行排序
+                List<Models.Shortcut> results = Models.ShortcutConfig.Instance.GetShortcuts(value);
+                // 清空全部并重新添加
+                ShortcutResults.Clear();
+                results.ForEach(s => ShortcutResults.Add(s));
 
-        public string ShowDescription
-        {
-            get
-            {
-                return Shortcut.Description;
-            }
-        }
-
-        #region IDataErrorInfo Members
-
-        private string _error;
-
-        public string Error
-        {
-            get { return _error; }
-        }
-
-        public string this[string propertyName]
-        {
-            get
-            {
-                _error = null;
-
-                if (propertyName == "Name")
+                // 如果为空的话，添加一个未匹配快捷键
+                if (ShortcutResults.Count == 0)
                 {
-                    _error = Shortcut.Update();
+                    ShortcutResults.Add(Models.Shortcut.GetNullShortcut());
                 }
 
-                // Dirty the commands registered with CommandManager,
-                // such as our Save command, so that they are queried
-                // to see if they can execute now.
-                CommandManager.InvalidateRequerySuggested();
-
-                return _error;
+                NotifyOfPropertyChange(() => InputText);
             }
         }
-
-        #endregion
     }
 }

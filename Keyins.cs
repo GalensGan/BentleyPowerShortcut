@@ -30,27 +30,37 @@ namespace SwTools.PowerShortcut
         public static void Install(string unparsed)
         {
             // 安装
-            // 1、选择配置文件
-            OpenFileDialog fileDialog = new OpenFileDialog()
+            // 判断是否有配置文件
+            if (!File.Exists(ShortcutConfig.ConfigPath))
             {
-                FileName="shortcutsConfig.json",
-                Filter="json配置文件|*.json"
-            };
-            if (fileDialog.ShowDialog() != DialogResult.OK) return;
+                OpenFileDialog fileDialog = new OpenFileDialog()
+                {
+                    FileName = "shortcutsConfig.json",
+                    Filter = "json配置文件|*.json"
+                };
+                if (fileDialog.ShowDialog() != DialogResult.OK) return;
 
-            // 将文件读取保存到指定目录
-            StreamWriter streamWriter = File.CreateText(ShortcutConfig.ConfigPath);
-            streamWriter.Write(new StreamReader(fileDialog.OpenFile()).ReadToEnd());
-            streamWriter.Close();
+                // 将文件读取保存到指定目录
+                StreamWriter streamWriter = File.CreateText(ShortcutConfig.ConfigPath);
+                streamWriter.Write(new StreamReader(fileDialog.OpenFile()).ReadToEnd());
+                streamWriter.Close();
+            }
 
             // 修改空格快捷键
             string prefPath = Path.GetDirectoryName(ShortcutConfig.ConfigPath) + "\\prefs\\OpenRoadsDesigner_Metric.KeyboardShortcuts.xml";
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(prefPath);
-            var root = xmlDoc.SelectSingleNode("KeyboardShortcuts/KeyboardShortcut[@ScanCode= '0x39']");
-            XmlNode keyinNode =  root.SelectSingleNode("Keyin");
-            keyinNode.InnerText = "Power shortcut";
-            xmlDoc.Save(prefPath);
+
+            // 判断该文件是否存在，如果不存在，提示手动修改
+            if (!File.Exists(prefPath))
+            {
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.Load(prefPath);
+                var root = xmlDoc.SelectSingleNode("KeyboardShortcuts/KeyboardShortcut[@ScanCode= '0x39']");
+                XmlNode keyinNode = root.SelectSingleNode("Keyin");
+                keyinNode.InnerText = "Power shortcut";
+                xmlDoc.Save(prefPath);
+
+                MessageBox.Show("未找到系统快捷键配置，请手动修改激活的快捷键");
+            }
 
             // 修改自动加载
             string personalConfPath = Path.GetDirectoryName(ShortcutConfig.ConfigPath) + "\\prefs\\Personal.ucf";
@@ -60,7 +70,7 @@ namespace SwTools.PowerShortcut
             if (!configContent.Contains(autoloadSentence))
             {
                 // 添加语句使其自动加载
-                StreamWriter configWriter = new StreamWriter(personalConfPath,true);
+                StreamWriter configWriter = new StreamWriter(personalConfPath, true);
                 configWriter.WriteLine(autoloadSentence);
                 configWriter.Close();
             }
@@ -71,7 +81,7 @@ namespace SwTools.PowerShortcut
         public static void OpenConfig(string unparsed)
         {
             // 打开配置文件
-            if (!File.Exists(ShortcutConfig.ConfigPath)) 
+            if (!File.Exists(ShortcutConfig.ConfigPath))
             {
                 StreamWriter streamWriter = File.CreateText(ShortcutConfig.ConfigPath);
                 streamWriter.Close();
