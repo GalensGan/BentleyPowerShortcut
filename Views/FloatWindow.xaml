@@ -6,12 +6,13 @@
         mc:Ignorable="d"
         xmlns:vm="clr-namespace:SwTools.PowerShortcut.ViewModels"
         xmlns:props="clr-namespace:SwTools.PowerShortcut.Properties"
+        xmlns:input="clr-namespace:System.Windows.Input;assembly=PresentationCore"
         d:DataContext="{d:DesignInstance vm:FloatWindowViewModel}"
         Title="超级快捷键"
-        MinHeight="100"
+        MinHeight="120"
         MinWidth="200"
         Width="200"
-        Height="100"
+        Height="120"
         >
     <Window.Resources>
         <Style x:Key="UserInfoStyle" TargetType="{x:Type ListBoxItem}">
@@ -43,7 +44,6 @@
     </Window.Resources>
 
     <Grid>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -52,7 +52,7 @@
 
         <TextBlock Margin="5,0,0,2" Grid.Row="0" Text="{x:Static props:Resources.Enter_Name}"></TextBlock>
 
-        <TextBox Margin="5,0,5,0" Grid.Row="1" Name="CommandText"  Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <TextBox Margin="5,0,5,0" Grid.Row="1" Name="CommandText"  Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" InputMethod.IsInputMethodEnabled="False">
         </TextBox>
 
         <ListBox Grid.Row="2" BorderThickness="0" ItemContainerStyle="{StaticResource UserInfoStyle}" x:Name="ShortcutsList" Background="Transparent" KeyboardNavigation.TabNavigation="Cycle" >
