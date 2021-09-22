@@ -24,8 +24,8 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <TextBlock Margin="5,0,0,0" Grid.Row="0" Text="{Binding Name}"/>
-                            <TextBlock Margin="5,0,0,0" Grid.Row="1" Text="{Binding Description}" Foreground="#808080"/>
+                            <TextBlock Margin="12,0,0,0" Grid.Row="0" Text="{Binding Name}"/>
+                            <TextBlock Margin="12,0,0,0" Grid.Row="1" Text="{Binding Description}" Foreground="#808080"/>
                             <TextBlock Grid.Row="0" Grid.RowSpan="2" Text="{Binding Frequency,StringFormat={}{0}次}" Foreground="#808080" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 5 0"/>
                         </Grid>
                         <ControlTemplate.Triggers>

@@ -131,17 +131,17 @@ namespace SwTools.PowerShortcut.Views
                 // 失去焦点
                 // Helper.Win32Helper.SetForegroundWindow(m_wndHelper.MSWinIntPtr);
             }
-            else if (e.Key == System.Windows.Input.Key.Tab)
-            {
-                // 自动补全
-                var first = _viewModel.ShortcutResults.FirstOrDefault();
-                if (first == null) return;
+            //else if (e.Key == System.Windows.Input.Key.Tab)
+            //{
+            //    // 自动补全
+            //    var first = _viewModel.ShortcutResults.FirstOrDefault();
+            //    if (first == null) return;
 
-                _viewModel.InputText = first.Name;
+            //    _viewModel.InputText = first.Name;
 
-                // 设置光标到末尾
-                CommandText.Select(_viewModel.InputText.Length, 0);
-            }
+            //    // 设置光标到末尾
+            //    CommandText.Select(_viewModel.InputText.Length, 0);
+            //}
             else if (e.Key == System.Windows.Input.Key.Up)
             {
                 // 上一个快捷键
