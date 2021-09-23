@@ -17,8 +17,8 @@ namespace SwTools.PowerShortcut.Models
             if (shortcut == null || string.IsNullOrEmpty(shortcut.Keyin)) return;
 
             // 判断最后一个是否与当前相同
-            var last = History.FirstOrDefault(item => item.Name == shortcut.Name);
-            if (last != null) return;
+            var last = History.LastOrDefault();
+            if (last != null && last.Name == shortcut.Name) return;
 
             if (History.Count == _limit)
             {
