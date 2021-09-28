@@ -3,12 +3,12 @@
     {
       "names": [ "config" ],
       "keyin": "power openConfig",
-      "description": "´ò¿ª¿ì½İ¼üÅäÖÃÎÄ¼ş"
+      "description": "æ‰“å¼€å¿«æ·é”®é…ç½®æ–‡ä»¶"
     },
     {
       "names": [ "reload" ],
       "keyin": "power reloadConfig",
-      "description": "ÖØĞÂ¼ÓÔØ¿ì½İ¼ü"
+      "description": "é‡æ–°åŠ è½½å¿«æ·é”®"
     }
   ]
 }

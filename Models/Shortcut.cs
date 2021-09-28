@@ -22,6 +22,11 @@ namespace SwTools.PowerShortcut.Models
         public string Keyin { get; set; }
 
         /// <summary>
+        /// 执行一系列命令
+        /// </summary>
+        public List<string> Keyins { get; set; } = new List<string>();
+
+        /// <summary>
         /// 描述
         /// </summary>
         public string Description { get; set; } = "无";
@@ -36,9 +41,15 @@ namespace SwTools.PowerShortcut.Models
         /// </summary>
         public bool RunKeyin()
         {
-            if (string.IsNullOrEmpty(Keyin)) return false;
+            if (string.IsNullOrEmpty(Keyin) && Keyins.Count < 1) return false;
 
-            Bentley.MstnPlatformNET.Session.Instance.Keyin(Keyin);
+            if (!string.IsNullOrEmpty(Keyin)) Bentley.MstnPlatformNET.Session.Instance.Keyin(Keyin);
+
+            // 执行keyins数组
+            foreach (var keyin in Keyins)
+            {
+                Bentley.MstnPlatformNET.Session.Instance.Keyin(keyin);
+            }
 
             // 保存使用次数
             Frequency++;

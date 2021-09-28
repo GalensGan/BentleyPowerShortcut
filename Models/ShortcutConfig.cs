@@ -40,7 +40,7 @@ namespace SwTools.PowerShortcut.Models
 
                 // 添加系统配置
                 Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SwTools.PowerShortcut.Models.systemShortcuts.json");
-                StreamReader sr = new StreamReader(stream);
+                StreamReader sr = new StreamReader(stream, Encoding.UTF8);
                 var systemShortcutsConfig = sr.ReadToEnd();
                 sr.Close();
                 stream.Close();
@@ -63,6 +63,7 @@ namespace SwTools.PowerShortcut.Models
                             // 获取数据
                             Name = name.ToObject<string>(),
                             Keyin = jt.Value<string>("keyin"),
+                            Keyins = jt.SelectValueOrDefault("keyins", new JArray()).ToObject<List<string>>(),
                             Description = jt.Value<string>("description"),
                             Frequency = jt.Value<int>("frequency")
                         };
