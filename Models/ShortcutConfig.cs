@@ -65,7 +65,7 @@ namespace SwTools.PowerShortcut.Models
                             Keyin = jt.Value<string>("keyin"),
                             Keyins = jt.SelectValueOrDefault("keyins", new JArray()).ToObject<List<string>>(),
                             Description = jt.Value<string>("description"),
-                            Frequency = jt.Value<int>("frequency")
+                            Frequency = jt.Value<double>("frequency")
                         };
 
                         // 从频率表中读取频率数据
@@ -122,7 +122,7 @@ namespace SwTools.PowerShortcut.Models
                 pattern += filter[i] + "\\S*";
             }
 
-            Regex regex = new Regex(pattern);
+            Regex regex = new Regex(pattern,RegexOptions.IgnoreCase);
 
             // 排序
             var results = _shortcuts.FindAll(item => regex.IsMatch(item.Name));
@@ -138,7 +138,7 @@ namespace SwTools.PowerShortcut.Models
             return results;
         }
 
-        public void SaveFrequency(string shortcutName, int frequency)
+        public void SaveFrequency(string shortcutName, double frequency)
         {
             var fObj = _primaryObj.SelectToken("frequency") as JObject;
             if (fObj == null)

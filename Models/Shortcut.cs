@@ -34,7 +34,7 @@ namespace SwTools.PowerShortcut.Models
         /// <summary>
         /// 使用频率
         /// </summary>
-        public int Frequency { get; set; } = 0;
+        public double Frequency { get; set; } = 0;
 
         /// <summary>
         /// 运行 keyin
