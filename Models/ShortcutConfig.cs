@@ -49,6 +49,34 @@ namespace SwTools.PowerShortcut.Models
                 JObject configObj = _primaryObj.DeepClone() as JObject;
                 configObj.Merge(sysShortcuts);
 
+                // 获取最小频率，对所有频率进行缩小，避免太多不好看
+                bool isNarrowFrequency = configObj.SelectValueOrDefault("settings.narrowFrequency", false);
+                if (isNarrowFrequency)
+                {
+                    // 获取所有的最小值
+                    JObject frequencyObj = configObj.SelectValueOrDefault("frequency", new JObject());
+                    var keys = frequencyObj.Properties();
+                    if (keys.Count() > 1)
+                    {
+                        Dictionary<string,double> frequencyDic = new Dictionary<string,double>();
+                        foreach(var key in keys)
+                        {
+                            frequencyDic.Add(key.Name, key.Value.Value<double>());
+                        }
+
+                        // 开始精简
+                        List<double> frequencyLs = frequencyDic.Values.Distinct().OrderBy(item => item).ToList();
+                        // 重新生成频率
+                        foreach(var key in keys)
+                        {
+                            var value = frequencyDic[key.Name];
+                            var index = frequencyLs.FindIndex(item => item == value);
+                            configObj["frequency"][key.Name] = index+1;
+                        }
+                    }
+                }
+
+
                 // 将配置转成快捷键
                 JArray arr = configObj.Value<JArray>("shortcuts");
                 foreach (JToken jt in arr)
@@ -76,8 +104,6 @@ namespace SwTools.PowerShortcut.Models
                         _shortcuts.Add(shortcut);
                     }
                 }
-
-                // 获取最小频率，对所有频率缩小
             }
             catch (Exception e)
             {
