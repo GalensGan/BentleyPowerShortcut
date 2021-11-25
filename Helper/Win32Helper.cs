@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SwTools.PowerShortcut.Helper
+namespace WowuTool.PowerShortcut.Helper
 {
     /// <summary>
     /// win32 函数

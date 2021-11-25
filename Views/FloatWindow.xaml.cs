@@ -9,10 +9,10 @@ using System.Runtime.InteropServices;
 using System.Windows;
 
 using Bentley.MstnPlatformNET.WPF;
-using SwTools.PowerShortcut.Models;
-using SwTools.PowerShortcut.ViewModels;
+using WowuTool.PowerShortcut.Models;
+using WowuTool.PowerShortcut.ViewModels;
 
-namespace SwTools.PowerShortcut.Views
+namespace WowuTool.PowerShortcut.Views
 {
     /// <summary>
     /// Interaction logic for FloatWindow.xaml

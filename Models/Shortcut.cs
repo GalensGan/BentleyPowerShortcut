@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SwTools.PowerShortcut.Models
+namespace WowuTool.PowerShortcut.Models
 {
     /// <summary>
     /// 单个快捷键

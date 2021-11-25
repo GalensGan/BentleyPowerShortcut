@@ -11,10 +11,10 @@ using System.Windows.Input;
 
 using Bentley.UI.Mvvm;
 
-using SwTools.PowerShortcut.Properties;
-using SwTools.PowerShortcut.Views;
+using WowuTool.PowerShortcut.Properties;
+using WowuTool.PowerShortcut.Views;
 
-namespace SwTools.PowerShortcut.ViewModels
+namespace WowuTool.PowerShortcut.ViewModels
 {
     class FloatWindowViewModel : ViewModelBase
     {

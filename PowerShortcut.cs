@@ -23,7 +23,7 @@ using System;
 using System.Resources;
 using System.Windows;
 
-namespace SwTools.PowerShortcut
+namespace WowuTool.PowerShortcut
 {
     /*====================================================================================**/
     ///

@@ -3,14 +3,14 @@
 |  $Copyright: (c) 2015 Bentley Systems, Incorporated. All rights reserved. $
 |
 +--------------------------------------------------------------------------------------*/
-using SwTools.PowerShortcut.Models;
+using WowuTool.PowerShortcut.Models;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace SwTools.PowerShortcut
+namespace WowuTool.PowerShortcut
 {
     class Keyins
     {
@@ -49,8 +49,21 @@ namespace SwTools.PowerShortcut
             // 修改空格快捷键
             string prefPath = Path.GetDirectoryName(ShortcutConfig.ConfigPath) + "\\prefs\\OpenRoadsDesigner_Metric.KeyboardShortcuts.xml";
 
+            // 修改自动加载
+            string personalConfPath = Path.GetDirectoryName(ShortcutConfig.ConfigPath) + "\\prefs\\Personal.ucf";
+            // 读取值并修改
+            string configContent = File.ReadAllText(personalConfPath);
+            string autoloadSentence = "\r\n%level Organization\r\nMS_DGNAPPS > PowerShortcut";
+            if (!configContent.Contains(autoloadSentence))
+            {
+                // 添加语句使其自动加载
+                StreamWriter configWriter = new StreamWriter(personalConfPath, true);
+                configWriter.Write(autoloadSentence);
+                configWriter.Close();
+            }
+
             // 判断该文件是否存在，如果不存在，提示手动修改
-            if (!File.Exists(prefPath))
+            if (File.Exists(prefPath))
             {
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(prefPath);
@@ -58,24 +71,14 @@ namespace SwTools.PowerShortcut
                 XmlNode keyinNode = root.SelectSingleNode("Keyin");
                 keyinNode.InnerText = "Power shortcut";
                 xmlDoc.Save(prefPath);
-
-                MessageBox.Show("未找到系统快捷键配置，请手动修改激活的快捷键");
             }
-
-            // 修改自动加载
-            string personalConfPath = Path.GetDirectoryName(ShortcutConfig.ConfigPath) + "\\prefs\\Personal.ucf";
-            // 读取值并修改
-            string configContent = File.ReadAllText(personalConfPath);
-            string autoloadSentence = "MS_DGNAPPS > PowerShortcut";
-            if (!configContent.Contains(autoloadSentence))
+            else
             {
-                // 添加语句使其自动加载
-                StreamWriter configWriter = new StreamWriter(personalConfPath, true);
-                configWriter.WriteLine(autoloadSentence);
-                configWriter.Close();
+                MessageBox.Show("未找到系统快捷键配置，需要手动修改激活的快捷键");
+                return;
             }
 
-            MessageBox.Show("安装成功，重启后生效！");
+            MessageBox.Show("安装成功！");
         }
 
         public static void OpenConfig(string unparsed)

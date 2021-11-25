@@ -1,7 +1,7 @@
 ﻿using Bentley.DgnPlatformNET;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SwTools.PowerShortcut.Helper;
+using WowuTool.PowerShortcut.Helper;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace SwTools.PowerShortcut.Models
+namespace WowuTool.PowerShortcut.Models
 {
     class ShortcutConfig
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SwTools.PowerShortcut.Helper
+namespace WowuTool.PowerShortcut.Helper
 {
    static  class JsonHelper
     {
