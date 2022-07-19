@@ -1,4 +1,7 @@
 {
+  "settings": {
+    "narrowFrequency": false
+  },
   "shortcuts": [
     {
       "names": [ "config" ],

@@ -25,13 +25,30 @@ namespace WowuTool.PowerShortcut.Models
 
         private ShortcutConfig()
         {
+            LoadConfig();
+        }
+
+        public static ShortcutConfig Instance
+        {
+            get
+            {
+                if (_instance == null) _instance = new ShortcutConfig();
+
+                return _instance;
+            }
+        }
+
+        /// <summary>
+        /// 加载配置文件
+        /// </summary>
+        private bool LoadConfig()
+        {
             if (!File.Exists(ConfigPath))
             {
                 // 请添加
                 System.Windows.Forms.MessageBox.Show($"请添加快捷键配置文件:{ConfigPath}");
-                return;
+                return false;
             }
-
             try
             {
 
@@ -39,7 +56,7 @@ namespace WowuTool.PowerShortcut.Models
                 _primaryObj = JsonConvert.DeserializeObject<JObject>(configStr);
 
                 // 添加系统配置
-                Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SwTools.PowerShortcut.Models.systemShortcuts.json");
+                Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("WowuTool.PowerShortcut.Models.systemShortcuts.json");
                 StreamReader sr = new StreamReader(stream, Encoding.UTF8);
                 var systemShortcutsConfig = sr.ReadToEnd();
                 sr.Close();
@@ -58,8 +75,8 @@ namespace WowuTool.PowerShortcut.Models
                     var keys = frequencyObj.Properties();
                     if (keys.Count() > 1)
                     {
-                        Dictionary<string,double> frequencyDic = new Dictionary<string,double>();
-                        foreach(var key in keys)
+                        Dictionary<string, double> frequencyDic = new Dictionary<string, double>();
+                        foreach (var key in keys)
                         {
                             frequencyDic.Add(key.Name, key.Value.Value<double>());
                         }
@@ -67,11 +84,11 @@ namespace WowuTool.PowerShortcut.Models
                         // 开始精简
                         List<double> frequencyLs = frequencyDic.Values.Distinct().OrderBy(item => item).ToList();
                         // 重新生成频率
-                        foreach(var key in keys)
+                        foreach (var key in keys)
                         {
                             var value = frequencyDic[key.Name];
                             var index = frequencyLs.FindIndex(item => item == value);
-                            configObj["frequency"][key.Name] = index+1;
+                            configObj["frequency"][key.Name] = index + 1;
                         }
                     }
                 }
@@ -104,20 +121,13 @@ namespace WowuTool.PowerShortcut.Models
                         _shortcuts.Add(shortcut);
                     }
                 }
+
+                return true;
             }
             catch (Exception e)
             {
                 System.Windows.Forms.MessageBox.Show(e.Message);
-            }
-        }
-
-        public static ShortcutConfig Instance
-        {
-            get
-            {
-                if (_instance == null) _instance = new ShortcutConfig();
-
-                return _instance;
+                return false;
             }
         }
 
@@ -126,7 +136,15 @@ namespace WowuTool.PowerShortcut.Models
         /// </summary>
         public void Reload()
         {
-            _instance = new ShortcutConfig();
+            // 先备份原来的 shortcuts
+            List<Shortcut> temp = new List<Shortcut>(_shortcuts);
+            _shortcuts.Clear();
+
+            // 加载失败后恢复原来的快捷键
+            if (!LoadConfig())
+            {
+                _shortcuts.AddRange(temp);
+            }
         }
 
         /// <summary>
@@ -164,6 +182,11 @@ namespace WowuTool.PowerShortcut.Models
             return results;
         }
 
+        /// <summary>
+        /// 保存使用频率
+        /// </summary>
+        /// <param name="shortcutName"></param>
+        /// <param name="frequency"></param>
         public void SaveFrequency(string shortcutName, double frequency)
         {
             var fObj = _primaryObj.SelectToken("frequency") as JObject;

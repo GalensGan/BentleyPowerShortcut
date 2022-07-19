@@ -90,7 +90,28 @@ namespace WowuTool.PowerShortcut
                 streamWriter.Close();
             }
 
-            Process.Start("notepad.exe", ShortcutConfig.ConfigPath);
+            // 监听文件变化，当文件改变时，自动加载快捷键
+            //FileSystemWatcher watcher = new FileSystemWatcher(Path.GetDirectoryName(ShortcutConfig.ConfigPath))
+            //{
+            //    Filter = "*.json",
+            //    NotifyFilter = NotifyFilters.LastWrite,
+            //    IncludeSubdirectories = false,
+            //    EnableRaisingEvents = true
+            //};
+            //watcher.Changed += (sender, e) =>
+            //{
+            //    if (e.FullPath == ShortcutConfig.ConfigPath)
+            //    {
+            //        // 重新加载
+            //        ShortcutConfig.Instance.Reload();
+            //    }
+            //};
+
+            Process process = Process.Start("notepad.exe", ShortcutConfig.ConfigPath);
+            process.WaitForExit();
+
+            // 重新加载
+            ShortcutConfig.Instance.Reload();
         }
     }
 }

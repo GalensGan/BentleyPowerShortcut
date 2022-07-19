@@ -16,9 +16,9 @@
     </SubKeyinTables>
     
     <KeyinHandlers>
-        <KeyinHandler Keyin="Power shortcut"   Function="SwTools.PowerShortcut.Keyins.PowerShortcutWindow" />
-		<KeyinHandler Keyin="Power reloadConfig"   Function="SwTools.PowerShortcut.Keyins.ReloadConfig" />
-		<KeyinHandler Keyin="Power install"   Function="SwTools.PowerShortcut.Keyins.Install" />
-		<KeyinHandler Keyin="Power openConfig"   Function="SwTools.PowerShortcut.Keyins.OpenConfig" />
+        <KeyinHandler Keyin="Power shortcut"   Function="WowuTool.PowerShortcut.Keyins.PowerShortcutWindow" />
+		<KeyinHandler Keyin="Power reloadConfig"   Function="WowuTool.PowerShortcut.Keyins.ReloadConfig" />
+		<KeyinHandler Keyin="Power install"   Function="WowuTool.PowerShortcut.Keyins.Install" />
+		<KeyinHandler Keyin="Power openConfig"   Function="WowuTool.PowerShortcut.Keyins.OpenConfig" />
 	</KeyinHandlers>
 </KeyinTree>
