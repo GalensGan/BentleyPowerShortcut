@@ -4,9 +4,7 @@
 
 ## 🌈演示
 
-<video id="video" controls="" preload="none" poster="https://obs.uamazing.cn:52443/public/files/images/image-20220726213114859.png">
-      <source id="mp4" src="https://obs.uamazing.cn:52443/public/files/video/Microstation-powershortcut.mp4" type="video/mp4" />
-</video>
+[![Microstation-powershortcut](https://obs.uamazing.cn:52443/public/files/images/power-shortcut-demo-cover.jpg)](https://obs.uamazing.cn:52443/public/files/video/Microstation-powershortcut.mp4 "Microstation-powershortcut")
 
 ## 🥝使用
 
