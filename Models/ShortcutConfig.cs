@@ -63,8 +63,11 @@ namespace WowuTool.PowerShortcut.Models
                 stream.Close();
 
                 JObject sysShortcuts = JObject.Parse(systemShortcutsConfig);
-                JObject configObj = _primaryObj.DeepClone() as JObject;
+                JObject configObj = new JObject();
+
+                // 合并配置
                 configObj.Merge(sysShortcuts);
+                configObj.Merge(_primaryObj);
 
                 // 获取最小频率，对所有频率进行缩小，避免太多不好看
                 bool isNarrowFrequency = configObj.SelectValueOrDefault("settings.narrowFrequency", false);

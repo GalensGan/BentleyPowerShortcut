@@ -9,6 +9,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Xml;
+using System.Threading.Tasks;
 
 namespace WowuTool.PowerShortcut
 {
@@ -106,12 +107,20 @@ namespace WowuTool.PowerShortcut
             //        ShortcutConfig.Instance.Reload();
             //    }
             //};
+            // 在新进程中打开编辑器
+            Task.Factory.StartNew(() =>
+            {
+                Process process = Process.Start("notepad.exe", ShortcutConfig.ConfigPath);
+                process.WaitForExit();
+                // 重新加载
+                ShortcutConfig.Instance.Reload();
+            });
+        }
 
-            Process process = Process.Start("notepad.exe", ShortcutConfig.ConfigPath);
-            process.WaitForExit();
+        public static void Setting(string unparsed)
+        {
+            // 修改设置
 
-            // 重新加载
-            ShortcutConfig.Instance.Reload();
         }
     }
 }
