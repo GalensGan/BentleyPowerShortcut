@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Interop;
 
 namespace WowuTool.PowerShortcut.Models
 {
@@ -21,11 +22,38 @@ namespace WowuTool.PowerShortcut.Models
 
         private JObject _primaryObj;
 
+        /// <summary>
+        /// 超级快捷键保存位置
+        /// </summary>
         public static string ConfigPath { get; private set; } = ConfigurationManager.GetVariable("_USTN_HOMEROOT") + "shortcutsConfig.json";
+
+        /// <summary>
+        /// ms 中的快捷键位置
+        /// </summary>
+        public static string KeyboardShortcuts { get; private set; } = ConfigurationManager.GetVariable("MS_KEYBOARDSHORTCUTS");
 
         private ShortcutConfig()
         {
             LoadConfig();
+
+            // 程序空闲时，处理保存
+            ComponentDispatcher.ThreadIdle += ComponentDispatcher_ThreadIdle;
+        }
+
+        private bool _isDirty = false;
+        private void ComponentDispatcher_ThreadIdle(object sender, EventArgs e)
+        {
+            if (!_isDirty) return;
+
+            // 在空闲时保存频率
+            // 保存
+            FileStream fileStream = new FileStream(ConfigPath, FileMode.Create);
+            StreamWriter sw = new StreamWriter(fileStream);
+            sw.Write(JsonConvert.SerializeObject(_primaryObj, Formatting.Indented));
+            sw.Close();
+            fileStream.Close();
+
+            _isDirty = false;
         }
 
         public static ShortcutConfig Instance
@@ -157,7 +185,7 @@ namespace WowuTool.PowerShortcut.Models
         /// <returns></returns>
         public List<Shortcut> GetShortcuts(string filter)
         {
-            if (filter==null) return new List<Shortcut>();
+            if (filter == null) return new List<Shortcut>();
             filter = filter.Trim(' ');
 
             if (string.IsNullOrEmpty(filter)) return new List<Shortcut>();
@@ -169,7 +197,7 @@ namespace WowuTool.PowerShortcut.Models
                 pattern += filter[i] + "\\S*";
             }
 
-            Regex regex = new Regex(pattern,RegexOptions.IgnoreCase);
+            Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
 
             // 排序
             var results = _shortcuts.FindAll(item => regex.IsMatch(item.Name));
@@ -204,12 +232,7 @@ namespace WowuTool.PowerShortcut.Models
             if (fProp == null) fObj.Add(new JProperty(shortcutName, frequency));
             else fObj[shortcutName] = frequency;
 
-            // 保存
-            FileStream fileStream = new FileStream(ConfigPath, FileMode.Create);
-            StreamWriter sw = new StreamWriter(fileStream);
-            sw.Write(JsonConvert.SerializeObject(_primaryObj, Formatting.Indented));
-            sw.Close();
-            fileStream.Close();
+            _isDirty = true;
         }
     }
 }

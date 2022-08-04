@@ -10,6 +10,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Xml;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using Bentley.DgnPlatformNET;
 
 namespace WowuTool.PowerShortcut
 {
@@ -34,21 +37,29 @@ namespace WowuTool.PowerShortcut
             // 判断是否有配置文件
             if (!File.Exists(ShortcutConfig.ConfigPath))
             {
-                OpenFileDialog fileDialog = new OpenFileDialog()
+                // 生成一个示例配置
+                JObject sample = new JObject()
                 {
-                    FileName = "shortcutsConfig.json",
-                    Filter = "json配置文件|*.json"
+                    new JProperty("shortcuts",new JArray()
+                    {
+                        new JObject()
+                        {
+                            new JProperty("names",new JArray()),
+                            new JProperty("keyin",""),
+                            new JProperty("keyins",new JArray()),
+                            new JProperty("description","这是一个快捷键配置示例，在实际中，keyin 与 keyins 可以任选其一使用，也可以一起使用")
+                        }
+                    }),
                 };
-                if (fileDialog.ShowDialog() != DialogResult.OK) return;
 
                 // 将文件读取保存到指定目录
                 StreamWriter streamWriter = File.CreateText(ShortcutConfig.ConfigPath);
-                streamWriter.Write(new StreamReader(fileDialog.OpenFile()).ReadToEnd());
+                streamWriter.Write(JsonConvert.SerializeObject(sample, Newtonsoft.Json.Formatting.Indented));
                 streamWriter.Close();
             }
 
             // 修改空格快捷键
-            string prefPath = Path.GetDirectoryName(ShortcutConfig.ConfigPath) + "\\prefs\\OpenRoadsDesigner_Metric.KeyboardShortcuts.xml";
+            string keyboardShorcutsFullName = ShortcutConfig.KeyboardShortcuts;
 
             // 修改自动加载
             string personalConfPath = Path.GetDirectoryName(ShortcutConfig.ConfigPath) + "\\prefs\\Personal.ucf";
@@ -64,14 +75,14 @@ namespace WowuTool.PowerShortcut
             }
 
             // 判断该文件是否存在，如果不存在，提示手动修改
-            if (File.Exists(prefPath))
+            if (File.Exists(keyboardShorcutsFullName))
             {
                 XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(prefPath);
+                xmlDoc.Load(keyboardShorcutsFullName);
                 var root = xmlDoc.SelectSingleNode("KeyboardShortcuts/KeyboardShortcut[@ScanCode= '0x39']");
                 XmlNode keyinNode = root.SelectSingleNode("Keyin");
                 keyinNode.InnerText = "Power shortcut";
-                xmlDoc.Save(prefPath);
+                xmlDoc.Save(keyboardShorcutsFullName);
             }
             else
             {
