@@ -19,7 +19,12 @@
 | box, model dialog, slider bar etc.                                                   |
 +--------------------------------------------------------------------------------------*/
 
+using Bentley.DgnPlatformNET;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Resources;
 using System.Windows;
 
@@ -51,10 +56,7 @@ namespace WowuTool.PowerShortcut
         /*------------------------------------------------------------------------------------**/
         /// <summary>The Run method</summary>
         /*--------------+---------------+---------------+---------------+---------------+------*/
-        protected override int Run
-        (
-        string[] commandLine
-        )
+        protected override int Run(string[] commandLine)
         {
             // save a reference to our addin to prevent it from being garbage collected.
             s_WPFSampleApp = this;
@@ -62,8 +64,12 @@ namespace WowuTool.PowerShortcut
             // Get the localized resources
             s_ResourceManager = Properties.Resources.ResourceManager;
 
+            // 处理程序集版本不同导致的bug
+            new Helper.AssemblyResolver();
+
             return 0;
         }
+        
 
         /*------------------------------------------------------------------------------------**/
         /// <summary>Static method to get the AddIn</summary>
@@ -80,5 +86,5 @@ namespace WowuTool.PowerShortcut
         {
             get { return s_ResourceManager; }
         }
-    } // WPFSampleApp
-}   // namespace WPFSample
+    }
+}
