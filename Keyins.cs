@@ -65,7 +65,8 @@ namespace WowuTool.PowerShortcut
             string personalConfPath = Path.GetDirectoryName(ShortcutConfig.ConfigPath) + "\\prefs\\Personal.ucf";
             // 读取值并修改
             string configContent = File.ReadAllText(personalConfPath);
-            string autoloadSentence = "\r\n%level Organization\r\nMS_DGNAPPS > PowerShortcut";
+            //string autoloadSentence = "\r\n%level Organization\r\nMS_DGNAPPS > PowerShortcut";
+            string autoloadSentence = "\r\nMS_DGNAPPS > PowerShortcut";
             if (!configContent.Contains(autoloadSentence))
             {
                 // 添加语句使其自动加载

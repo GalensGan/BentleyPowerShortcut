@@ -12,9 +12,9 @@ namespace WowuTool.PowerShortcut.Helper
     /// <summary>
     /// 程序集解析失败时进行调用
     /// </summary>
-    internal class AssemblyResolver
+    internal class BentleyAssemblyResolver
     {
-        public AssemblyResolver()
+        public BentleyAssemblyResolver()
         {
             // 注册事件
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;

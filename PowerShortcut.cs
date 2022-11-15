@@ -65,7 +65,7 @@ namespace WowuTool.PowerShortcut
             s_ResourceManager = Properties.Resources.ResourceManager;
 
             // 处理程序集版本不同导致的bug
-            new Helper.AssemblyResolver();
+            new Helper.BentleyAssemblyResolver();
 
             return 0;
         }
